@@ -856,7 +856,7 @@ document.getElementById('waitlist-form').addEventListener('submit', async functi
   btn.textContent = 'Joining...';
   btn.disabled = true;
   try {
-    const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+    const res = await fetch('https://formspree.io/f/xqewwykj', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({ name, email, source: 'LingoFlix landing page' })
