@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How LingoFlix Works — Follow Mei's Journey</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F7F3EC;--ink:#16130E;--ink-soft:#4A4540;--ink-muted:#9A9590;
+  --teal:#1D9E75;--teal-light:#E1F5EE;--teal-mid:#5DCAA5;
+  --gold:#D4A843;--gold-light:#FDF3DC;
+  --coral:#D85A30;--coral-light:#FAECE7;
+  --purple:#534AB7;--purple-light:#EEEDFE;
+  --border:rgba(22,19,14,0.1);
+  --beg:#1D9E75;--int:#D4A843;--adv:#D85A30;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--ink);font-size:16px;line-height:1.6;overflow-x:hidden;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 4rem;background:rgba(247,243,236,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;color:var(--ink);text-decoration:none;}
+.logo span{color:var(--teal);}
+.nav-right{display:flex;align-items:center;gap:1.5rem;}
+.nav-back{font-size:0.85rem;color:var(--ink-soft);text-decoration:none;transition:color 0.2s;}
+.nav-back:hover{color:var(--ink);}
+.nav-cta{background:var(--ink);color:var(--cream);padding:0.5rem 1.2rem;border-radius:100px;font-size:0.85rem;font-weight:600;text-decoration:none;transition:background 0.2s;}
+.nav-cta:hover{background:var(--teal);}
+.page-hero{padding:10rem 4rem 5rem;text-align:center;position:relative;overflow:hidden;}
+.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(29,158,117,0.08) 0%,transparent 70%);pointer-events:none;}
+.eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:var(--teal-light);border:1px solid rgba(29,158,117,0.2);padding:0.3rem 0.9rem;border-radius:100px;font-size:0.78rem;font-weight:600;color:var(--teal);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem;}
+.page-hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.5rem,8vw,7rem);line-height:0.95;letter-spacing:0.01em;margin-bottom:1.5rem;}
+.page-hero h1 em{font-style:normal;color:var(--teal);}
+.page-hero p{font-size:1.05rem;color:var(--ink-soft);max-width:500px;margin:0 auto 2.5rem;line-height:1.75;}
+.mei-card{display:inline-flex;align-items:center;gap:1rem;background:#fff;border:1px solid var(--border);border-radius:16px;padding:0.9rem 1.4rem;box-shadow:0 4px 24px rgba(22,19,14,0.07);}
+.mei-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#f8d7a0,#f4a261);display:flex;align-items:center;justify-content:center;font-size:1.4rem;}
+.mei-name{font-size:0.95rem;font-weight:600;}
+.mei-detail{font-size:0.75rem;color:var(--ink-muted);}
+.mei-badge{background:var(--teal-light);color:var(--teal);font-size:0.7rem;font-weight:600;padding:0.2rem 0.65rem;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;margin-left:0.5rem;transition:all 0.3s;}
+.scroll-hint{display:flex;flex-direction:column;align-items:center;gap:0.5rem;padding:2rem 0 3rem;color:var(--ink-muted);font-size:0.8rem;}
+.scroll-arrow{width:22px;height:22px;border-right:2px solid var(--ink-muted);border-bottom:2px solid var(--ink-muted);transform:rotate(45deg);animation:bounce 1.5s infinite;}
+@keyframes bounce{0%,100%{transform:rotate(45deg) translateY(0);}50%{transform:rotate(45deg) translateY(6px);}}
+.toggle-wrap{position:sticky;top:72px;z-index:100;display:flex;justify-content:center;padding:1rem 0;background:rgba(247,243,236,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);}
+.toggle-inner{display:flex;flex-direction:column;align-items:center;gap:0.4rem;}
+.level-toggle{display:flex;background:#fff;border:1px solid var(--border);border-radius:100px;padding:4px;box-shadow:0 2px 12px rgba(22,19,14,0.06);}
+.lvl-btn{padding:0.5rem 1.4rem;border-radius:100px;border:none;background:transparent;font-size:0.85rem;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all 0.25s;color:var(--ink-muted);display:flex;align-items:center;gap:0.45rem;}
+.lvl-btn .d{width:8px;height:8px;border-radius:50%;transition:background 0.25s;}
+.lvl-btn[data-l="beginner"] .d{background:var(--beg);}
+.lvl-btn[data-l="intermediate"] .d{background:var(--int);}
+.lvl-btn[data-l="advanced"] .d{background:var(--adv);}
+.lvl-btn.on{background:var(--ink);color:#fff;}
+.lvl-btn.on .d{background:#fff;}
+.toggle-desc{font-size:0.73rem;color:var(--ink-muted);font-style:italic;}
+.chapter{padding:7rem 4rem;opacity:0;transform:translateY(36px);transition:opacity 0.7s ease,transform 0.7s ease;}
+.chapter.vis{opacity:1;transform:translateY(0);}
+.ch-num{font-family:'Bebas Neue',sans-serif;font-size:7rem;font-weight:400;color:rgba(22,19,14,0.05);line-height:1;margin-bottom:-1.5rem;}
+.ch-label{font-size:0.73rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:0.5rem;display:flex;align-items:center;gap:0.5rem;}
+.ch-label::before{content:'';display:block;width:20px;height:2px;background:var(--teal);}
+.chapter h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,5vw,4rem);line-height:0.95;letter-spacing:0.01em;margin-bottom:1rem;}
+.chapter h2 em{font-style:normal;color:var(--teal);}
+.ch-sub{font-size:0.98rem;color:var(--ink-soft);max-width:450px;line-height:1.75;margin-bottom:3rem;}
+.div-line{display:flex;align-items:center;gap:1.5rem;padding:0 4rem;opacity:0;transform:scaleX(0.8);transition:opacity 0.6s ease,transform 0.6s ease;}
+.div-line.vis{opacity:1;transform:scaleX(1);}
+.dl{flex:1;height:1px;background:var(--border);}
+.di{width:40px;height:40px;border-radius:50%;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.ch1-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:5rem;align-items:center;}
+.fc-stack{position:relative;height:360px;}
+.fc{position:absolute;background:#fff;border:1px solid var(--border);border-radius:20px;padding:2.2rem;width:290px;box-shadow:0 6px 28px rgba(22,19,14,0.08);transition:all 0.4s ease;}
+.fc-bg1{left:0;top:0;transform:rotate(-3deg);z-index:1;}
+.fc-bg2{left:25px;top:12px;transform:rotate(1.5deg);z-index:2;}
+.fc-front{left:12px;top:6px;z-index:3;}
+.fc.pop{transform:rotate(0deg) scale(1.04)!important;z-index:10;box-shadow:0 16px 48px rgba(22,19,14,0.14);}
+.fc-badge{font-size:0.7rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:0.22rem 0.65rem;border-radius:100px;display:inline-block;margin-bottom:1.2rem;transition:all 0.3s;}
+.fc-zh{font-family:'Noto Sans SC',sans-serif;font-size:3rem;font-weight:700;margin-bottom:0.4rem;}
+.fc-py{font-size:0.88rem;color:var(--ink-muted);margin-bottom:0.35rem;font-style:italic;}
+.fc-en{font-size:1.05rem;font-weight:600;color:var(--ink-soft);}
+.fc-ctx{font-size:0.78rem;color:var(--ink-muted);margin-top:0.8rem;line-height:1.5;border-top:1px solid var(--border);padding-top:0.75rem;}
+.fc-btns{display:flex;gap:0.6rem;margin-top:1.1rem;}
+.fc-b{flex:1;padding:0.5rem;border-radius:10px;border:1px solid var(--border);font-size:0.8rem;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:all 0.2s;background:transparent;}
+.fc-b.again{color:var(--coral);}.fc-b.again:hover{background:var(--coral-light);}
+.fc-b.good{color:var(--teal);}.fc-b.good:hover{background:var(--teal-light);}
+.fc-b.easy{color:var(--purple);}.fc-b.easy:hover{background:var(--purple-light);}
+.prog-panel{background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.4rem;margin-top:1.8rem;}
+.prog-panel h5{font-size:0.82rem;font-weight:600;color:var(--ink-soft);margin-bottom:1rem;}
+.prog-row{display:flex;align-items:center;gap:0.7rem;margin-bottom:0.55rem;}
+.prog-lbl{font-size:0.76rem;color:var(--ink-muted);width:75px;flex-shrink:0;}
+.prog-track{flex:1;height:5px;background:rgba(22,19,14,0.07);border-radius:100px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:100px;transition:width 0.8s ease;}
+.prog-n{font-size:0.76rem;font-weight:600;width:24px;text-align:right;}
+.vocab-panel{background:#fff;border:1px solid var(--border);border-radius:20px;padding:1.8rem;}
+.vocab-panel h5{font-size:0.83rem;font-weight:600;color:var(--ink-soft);margin-bottom:1rem;}
+.tv-frame{background:#0d0d1a;border-radius:20px;overflow:hidden;box-shadow:0 24px 80px rgba(22,19,14,0.22);border:1px solid rgba(255,255,255,0.04);max-width:860px;margin:0 auto;}
+.tv-bar{background:#111122;padding:0.65rem 1.2rem;display:flex;align-items:center;gap:0.6rem;border-bottom:1px solid rgba(255,255,255,0.04);}
+.tdot{width:10px;height:10px;border-radius:50%;}
+.tdot:nth-child(1){background:#ff5f57;}.tdot:nth-child(2){background:#febc2e;}.tdot:nth-child(3){background:#28c840;}
+.tv-title{flex:1;text-align:center;font-size:0.73rem;color:rgba(255,255,255,0.28);}
+.lf-badge{font-size:0.68rem;font-weight:700;letter-spacing:0.06em;background:var(--teal);color:#fff;padding:0.2rem 0.6rem;border-radius:100px;}
+.tv-scene{min-height:280px;position:relative;background:linear-gradient(160deg,#1a1a2e 0%,#16213e 55%,#0f3460 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.scene-ghost{position:absolute;font-family:'Noto Sans SC',sans-serif;font-size:7rem;font-weight:700;color:rgba(255,255,255,0.03);user-select:none;}
+.chars{display:flex;gap:4rem;align-items:flex-end;position:relative;z-index:1;}
+.char{text-align:center;}
+.sil{width:60px;height:110px;border-radius:30px 30px 0 0;margin:0 auto 0.4rem;}
+.sil-a{background:linear-gradient(180deg,#e8b4a0,#c47d5e);}
+.sil-b{background:linear-gradient(180deg,#a0b4e8,#5e7ec4);}
+.char-nm{font-size:0.68rem;color:rgba(255,255,255,0.35);font-family:'Noto Sans SC',sans-serif;}
+.bubble{position:absolute;top:1.2rem;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.07);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:0.75rem 1.1rem;font-family:'Noto Sans SC',sans-serif;font-size:1.05rem;color:rgba(255,255,255,0.88);white-space:nowrap;display:flex;gap:0.25rem;align-items:center;flex-wrap:wrap;justify-content:center;}
+.tv-sub-bar{background:#0a0a18;padding:1.1rem 1.8rem;border-top:1px solid rgba(255,255,255,0.04);}
+.sub-zh{font-family:'Noto Sans SC',sans-serif;font-size:1.15rem;color:rgba(255,255,255,0.88);text-align:center;margin-bottom:0.35rem;display:flex;gap:0.18rem;align-items:center;justify-content:center;flex-wrap:wrap;line-height:1.8;}
+.sub-en{font-size:0.83rem;color:rgba(255,255,255,0.38);text-align:center;margin-bottom:0.9rem;}
+.legend{display:flex;gap:1.4rem;justify-content:center;flex-wrap:wrap;}
+.leg-item{display:flex;align-items:center;gap:0.35rem;font-size:0.7rem;color:rgba(255,255,255,0.38);}
+.leg-dot{width:7px;height:7px;border-radius:50%;}
+.ai-bar{background:#0a0a18;border-top:1px solid rgba(255,255,255,0.04);padding:0.9rem 1.4rem;display:flex;gap:0.7rem;align-items:flex-start;}
+.ai-ico{width:30px;height:30px;min-width:30px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;color:#fff;}
+.ai-txt{background:rgba(29,158,117,0.1);border:1px solid rgba(29,158,117,0.2);border-radius:12px;padding:0.65rem 0.95rem;font-size:0.8rem;color:rgba(255,255,255,0.78);line-height:1.55;flex:1;transition:all 0.3s;}
+.ai-txt strong{color:var(--teal-mid);}
+.wk-bar{background:#0a0a18;border-top:1px solid rgba(255,255,255,0.04);padding:0.7rem 1.4rem;display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap;}
+.wk-lbl{font-size:0.7rem;color:rgba(255,255,255,0.28);letter-spacing:0.06em;text-transform:uppercase;}
+.wk-chip{font-family:'Noto Sans SC',sans-serif;font-size:0.78rem;padding:0.18rem 0.55rem;border-radius:100px;background:rgba(29,158,117,0.14);color:var(--teal-mid);border:1px solid rgba(29,158,117,0.2);}
+.hint-box{margin-top:1.8rem;background:rgba(29,158,117,0.06);border:1px solid rgba(29,158,117,0.15);border-radius:14px;padding:1.2rem 1.8rem;max-width:860px;margin-left:auto;margin-right:auto;}
+.hint-box p{font-size:0.86rem;color:var(--ink-soft);line-height:1.7;}
+.w{display:inline-block;border-radius:4px;transition:all 0.35s ease;cursor:default;padding:0 2px;position:relative;}
+.w[data-lv="beginner"]{background:rgba(29,158,117,0.22);color:#5DCAA5;box-shadow:0 0 0 1px rgba(29,158,117,0.28);}
+.w[data-lv="intermediate"]{background:rgba(212,168,67,0.22);color:#D4A843;box-shadow:0 0 0 1px rgba(212,168,67,0.28);}
+.w[data-lv="advanced"]{background:rgba(216,90,48,0.18);color:#D85A30;box-shadow:0 0 0 1px rgba(216,90,48,0.22);}
+.w.dim{background:transparent!important;color:rgba(255,255,255,0.32)!important;box-shadow:none!important;}
+.w.hid{background:transparent!important;color:rgba(255,255,255,0.18)!important;box-shadow:none!important;}
+.w:hover::after{content:attr(data-py) ' · ' attr(data-en);position:absolute;bottom:120%;left:50%;transform:translateX(-50%);background:rgba(22,19,14,0.92);color:#fff;font-size:0.7rem;white-space:nowrap;padding:0.28rem 0.65rem;border-radius:8px;pointer-events:none;z-index:50;font-family:'Plus Jakarta Sans',sans-serif;}
+.pw{display:inline;border-radius:3px;padding:0 2px;transition:all 0.35s ease;cursor:default;}
+.pw[data-lv="beginner"]{background:rgba(29,158,117,0.11);color:#0f6e56;}
+.pw[data-lv="intermediate"]{background:rgba(212,168,67,0.14);color:#854F0B;}
+.pw[data-lv="advanced"]{background:rgba(216,90,48,0.11);color:#993C1D;}
+.pw.dim{background:transparent!important;color:inherit!important;}
+.pw.hid{background:transparent!important;color:inherit!important;}
+.ch3-grid{display:grid;grid-template-columns:1.25fr 0.95fr;gap:3.5rem;align-items:start;}
+.feed{display:flex;flex-direction:column;gap:1rem;}
+.post{background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;transition:box-shadow 0.3s;}
+.post:hover{box-shadow:0 8px 30px rgba(22,19,14,0.09);}
+.post-hd{display:flex;align-items:center;gap:0.7rem;padding:0.9rem 1.1rem 0.8rem;border-bottom:1px solid var(--border);}
+.pav{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.82rem;font-weight:700;flex-shrink:0;}
+.pu{font-size:0.86rem;font-weight:600;}
+.ps{font-size:0.72rem;color:var(--ink-muted);}
+.nat{margin-left:auto;font-size:0.67rem;font-weight:600;padding:0.18rem 0.5rem;border-radius:100px;background:var(--gold-light);color:#7a5e0a;border:1px solid rgba(212,168,67,0.3);white-space:nowrap;}
+.post-body{padding:0.9rem 1.1rem;font-family:'Noto Sans SC',sans-serif;font-size:0.93rem;line-height:2.1;color:var(--ink);}
+.post-tr{padding:0 1.1rem 0.7rem;font-size:0.78rem;color:var(--ink-muted);line-height:1.5;font-style:italic;}
+.post-comments{border-top:1px solid var(--border);padding:0.7rem 1.1rem;display:flex;flex-direction:column;gap:0.45rem;}
+.cmt{display:flex;gap:0.55rem;align-items:flex-start;}
+.cav{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.62rem;font-weight:700;flex-shrink:0;}
+.ctxt{background:rgba(22,19,14,0.04);border-radius:10px;padding:0.38rem 0.7rem;font-size:0.78rem;line-height:1.5;}
+.post-ft{padding:0.55rem 1.1rem;border-top:1px solid var(--border);display:flex;gap:1.2rem;align-items:center;}
+.pa{font-size:0.76rem;color:var(--ink-muted);cursor:pointer;transition:color 0.2s;}
+.pa:hover{color:var(--teal);}
+.match-panel{background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;position:sticky;top:140px;}
+.mp-hd{padding:0.95rem 1.1rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.mp-hd h4{font-size:0.88rem;font-weight:600;}
+.mp-hd span{font-size:0.73rem;color:var(--teal);font-weight:600;}
+.mi{display:flex;gap:0.75rem;align-items:center;padding:0.85rem 1.1rem;border-bottom:1px solid var(--border);transition:background 0.2s;cursor:pointer;}
+.mi:last-child{border-bottom:none;}
+.mi:hover{background:rgba(22,19,14,0.02);}
+.mi.feat{background:var(--teal-light);}
+.mav{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.88rem;font-weight:700;flex-shrink:0;}
+.mn{font-size:0.86rem;font-weight:600;}
+.md{font-size:0.7rem;color:var(--ink-muted);}
+.shows{display:flex;gap:0.3rem;margin-top:0.25rem;flex-wrap:wrap;}
+.stag{font-size:0.63rem;font-weight:600;padding:0.12rem 0.42rem;border-radius:100px;background:rgba(22,19,14,0.06);color:var(--ink-soft);}
+.mc{font-size:0.73rem;font-weight:600;color:var(--teal);text-decoration:none;white-space:nowrap;}
+.online{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:3px;}
+.cowatch{padding:0.9rem 1.1rem;background:var(--gold-light);border-top:1px solid rgba(212,168,67,0.2);}
+.cowatch-t{font-size:0.76rem;font-weight:600;color:#7a5e0a;margin-bottom:0.25rem;}
+.cowatch-d{font-size:0.71rem;color:#8a6a10;line-height:1.5;}
+.cowatch-a{display:inline-block;margin-top:0.45rem;font-size:0.73rem;font-weight:600;color:var(--teal);text-decoration:none;}
+.final-cta{background:var(--ink);color:var(--cream);padding:7rem 4rem;text-align:center;}
+.final-cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,5.5rem);line-height:0.95;letter-spacing:0.01em;margin-bottom:1rem;color:var(--cream);}
+.final-cta h2 em{font-style:normal;color:var(--teal-mid);}
+.final-cta p{color:rgba(247,243,236,0.55);max-width:420px;margin:0 auto 2.5rem;line-height:1.7;}
+.btn-final{background:var(--teal);color:#fff;padding:1rem 2.5rem;border-radius:100px;font-size:1rem;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;text-decoration:none;display:inline-block;transition:all 0.2s;}
+.btn-final:hover{background:#148a63;transform:translateY(-2px);}
+footer{background:#0d0b08;color:rgba(247,243,236,0.32);padding:2rem 4rem;display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;flex-wrap:wrap;gap:1rem;}
+.fl{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:var(--cream);}
+.fl span{color:var(--teal);}
+@media(max-width:860px){
+  nav{padding:1rem 1.5rem;}
+  .page-hero,.chapter,.final-cta{padding-left:1.5rem;padding-right:1.5rem;}
+  .page-hero{padding-top:8rem;}
+  .chapter{padding-top:4rem;padding-bottom:4rem;}
+  .ch1-grid,.ch3-grid{grid-template-columns:1fr;}
+  .match-panel{position:static;}
+  .div-line{padding:0 1.5rem;}
+  footer{padding:1.5rem;}
+  .fc-stack{height:300px;}
+  .bubble{white-space:normal;width:90%;font-size:0.9rem;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="lingoflix.html" class="logo">Lingo<span>Flix</span></a>
+  <div class="nav-right">
+    <a href="lingoflix.html" class="nav-back">← Home</a>
+    <a href="lingoflix.html#waitlist" class="nav-cta">Join waitlist</a>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="eyebrow">Interactive Demo</div>
+  <h1>Follow <em>Mei's</em><br>Learning Journey</h1>
+  <p>Mei is learning Mandarin through her favorite Chinese drama. See how LingoFlix guides her from first flashcard to real conversation — all in one place.</p>
+  <div class="mei-card">
+    <div class="mei-avatar">🧑‍🎓</div>
+    <div>
+      <div class="mei-name">Mei, 24 — San Francisco <span class="mei-badge" id="mei-badge">Beginner</span></div>
+      <div class="mei-detail">Learning Mandarin · Watching 致我们单纯的小美好 (A Love So Beautiful)</div>
+    </div>
+  </div>
+</section>
+
+<div class="scroll-hint"><span>Scroll to follow her journey</span><div class="scroll-arrow"></div></div>
+
+<div class="toggle-wrap">
+  <div class="toggle-inner">
+    <div class="level-toggle">
+      <button class="lvl-btn on" data-l="beginner"><span class="d"></span>Beginner</button>
+      <button class="lvl-btn" data-l="intermediate"><span class="d"></span>Intermediate</button>
+      <button class="lvl-btn" data-l="advanced"><span class="d"></span>Advanced</button>
+    </div>
+    <div class="toggle-desc" id="tog-desc">Words Mei knows light up — unknown words fade into the background</div>
+  </div>
+</div>
+
+<section class="chapter" id="ch1">
+  <div class="ch-num">01</div>
+  <div class="ch-label">Morning — Structured Learning</div>
+  <h2>Build the <em>foundation</em><br>with smart flashcards</h2>
+  <p class="ch-sub">Before Mei watches tonight's episode, LingoFlix gives her a quick 5-minute session — words pulled directly from tonight's episode of A Love So Beautiful, not generic vocabulary lists.</p>
+  <div class="ch1-grid">
+    <div>
+      <div class="fc-stack">
+        <div class="fc fc-bg1">
+          <div class="fc-badge" style="background:var(--purple-light);color:var(--purple);">Review in 3 days</div>
+          <div class="fc-zh">朋友</div><div class="fc-py">péngyǒu</div><div class="fc-en">friend</div>
+        </div>
+        <div class="fc fc-bg2">
+          <div class="fc-badge" style="background:var(--gold-light);color:#8a6a10;">Review tomorrow</div>
+          <div class="fc-zh">喜欢</div><div class="fc-py">xǐhuān</div><div class="fc-en">to like</div>
+        </div>
+        <div class="fc fc-front pop" id="fc-front">
+          <div class="fc-badge" id="fc-badge" style="background:var(--teal-light);color:var(--teal);">Beginner · Due now</div>
+          <div class="fc-zh" id="fc-zh">你好</div>
+          <div class="fc-py" id="fc-py">nǐ hǎo</div>
+          <div class="fc-en" id="fc-en">hello / hi</div>
+          <div class="fc-ctx" id="fc-ctx">Heard in ep.3 when Xiaoxi greets Jiang Chen at school. Seen 4× this week.</div>
+          <div class="fc-btns">
+            <button class="fc-b again" onclick="nextCard('again')">Again</button>
+            <button class="fc-b good" onclick="nextCard('good')">Good ✓</button>
+            <button class="fc-b easy" onclick="nextCard('easy')">Easy ⚡</button>
+          </div>
+        </div>
+      </div>
+      <div class="prog-panel">
+        <h5>Today's session</h5>
+        <div class="prog-row"><span class="prog-lbl">New words</span><div class="prog-track"><div class="prog-fill" id="pf-new" style="width:60%;background:var(--teal);"></div></div><span class="prog-n" id="pn-new">6</span></div>
+        <div class="prog-row"><span class="prog-lbl">Reviewing</span><div class="prog-track"><div class="prog-fill" id="pf-rev" style="width:80%;background:var(--gold);"></div></div><span class="prog-n" id="pn-rev">12</span></div>
+        <div class="prog-row"><span class="prog-lbl">Mastered</span><div class="prog-track"><div class="prog-fill" id="pf-mas" style="width:40%;background:var(--purple);"></div></div><span class="prog-n" id="pn-mas">4</span></div>
+      </div>
+    </div>
+    <div class="vocab-panel">
+      <h5>Tonight's episode — key words</h5>
+      <div id="vocab-list"></div>
+      <div style="margin-top:1rem;padding-top:0.9rem;border-top:1px solid var(--border);font-size:0.76rem;color:var(--ink-muted);">Episode 6 · "The Study Session" · 致我们单纯的小美好</div>
+    </div>
+  </div>
+</section>
+
+<div class="div-line" id="d1"><div class="dl"></div><div class="di">🎬</div><div class="dl"></div></div>
+
+<section class="chapter" id="ch2">
+  <div class="ch-num">02</div>
+  <div class="ch-label">Evening — Watching the Drama</div>
+  <h2>Words you <em>know</em><br>light up on screen</h2>
+  <p class="ch-sub">Mei opens Netflix and presses play. The LingoFlix extension activates instantly — highlighting vocabulary by her level so she's always in the perfect learning zone: challenged but never lost.</p>
+  <div class="tv-frame">
+    <div class="tv-bar">
+      <div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>
+      <div class="tv-title">Netflix · 致我们单纯的小美好 (A Love So Beautiful) · Episode 6</div>
+      <div class="lf-badge">LingoFlix ON</div>
+    </div>
+    <div class="tv-scene">
+      <div class="scene-ghost">致我们</div>
+      <div class="bubble">
+        <span class="w" data-lv="beginner" data-py="wǒ" data-en="I / me">我</span>
+        <span class="w" data-lv="intermediate" data-py="zhīdào" data-en="know">知道</span>
+        <span class="w" data-lv="beginner" data-py="nǐ" data-en="you">你</span>
+        <span class="w" data-lv="advanced" data-py="xǐhuān" data-en="like">喜欢</span>
+        <span class="w" data-lv="beginner" data-py="tā" data-en="her">她</span>
+      </div>
+      <div class="chars">
+        <div class="char"><div class="sil sil-a"></div><div class="char-nm">陈小西</div></div>
+        <div class="char"><div class="sil sil-b"></div><div class="char-nm">江辰</div></div>
+      </div>
+    </div>
+    <div class="tv-sub-bar">
+      <div class="sub-zh">
+        <span class="w" data-lv="beginner" data-py="wǒ" data-en="I">我</span>
+        <span class="w" data-lv="beginner" data-py="zhēn de" data-en="really">真的</span>
+        <span class="w" data-lv="intermediate" data-py="bù míng bai" data-en="don't understand">不明白</span>
+        <span class="w" data-lv="beginner" data-py="nǐ" data-en="you">你</span>
+        <span class="w" data-lv="advanced" data-py="wèishéme" data-en="why">为什么</span>
+        <span class="w" data-lv="intermediate" data-py="zhème" data-en="like this">这么</span>
+        <span class="w" data-lv="advanced" data-py="juéjiàng" data-en="stubborn">倔强</span>
+      </div>
+      <div class="sub-en">"I really don't understand why you're so stubborn."</div>
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:var(--beg);"></div>Beginner</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--int);"></div>Intermediate</div>
+        <div class="leg-item"><div class="leg-dot" style="background:var(--adv);"></div>Advanced</div>
+        <div class="leg-item"><div class="leg-dot" style="background:rgba(255,255,255,0.15);"></div>Not yet learned</div>
+      </div>
+    </div>
+    <div class="ai-bar">
+      <div class="ai-ico">AI</div>
+      <div class="ai-txt" id="ai-txt"><strong>倔强 (juéjiàng)</strong> — "stubborn / unyielding." An advanced word Jiang Chen uses again in episodes 9 and 12. Want to add it to tonight's flashcard session?</div>
+    </div>
+    <div class="wk-bar">
+      <span class="wk-lbl">You know</span>
+      <span class="wk-chip" id="wk">我 · 你 · 她 · 真的 · 朋友 · 好</span>
+    </div>
+  </div>
+  <div class="hint-box">
+    <p><strong style="color:var(--teal);">Try toggling your level above.</strong> As a beginner, only green words glow — keeping focus tight. Switch to intermediate and a new layer lights up. Advanced reveals the full scene. LingoFlix keeps Mei in her optimal zone: always challenged, never overwhelmed. Hover over any highlighted word to see its meaning.</p>
+  </div>
+</section>
+
+<div class="div-line" id="d2"><div class="dl"></div><div class="di">🤝</div><div class="dl"></div></div>
+
+<section class="chapter" id="ch3">
+  <div class="ch-num">03</div>
+  <div class="ch-label">Night — Community & Language Partners</div>
+  <h2>Real people.<br><em>Real Mandarin.</em></h2>
+  <p class="ch-sub">After watching, Mei opens her LingoFlix feed. Native speakers post in Mandarin about their day — and the same smart highlighting shows her exactly which words she already knows, making authentic content feel within reach.</p>
+  <div class="ch3-grid">
+    <div class="feed">
+      <div class="post">
+        <div class="post-hd">
+          <div class="pav" style="background:#fce4d6;color:#c47d5e;">林</div>
+          <div><div class="pu">林晓雨 · Lin Xiaoyu</div><div class="ps">Shanghai · Watching A Love So Beautiful · 2h ago</div></div>
+          <div class="nat">Native Speaker</div>
+        </div>
+        <div class="post-body">
+          <span class="pw" data-lv="beginner">今天</span>
+          <span class="pw" data-lv="beginner">天气</span>
+          <span class="pw" data-lv="beginner">真</span>
+          <span class="pw" data-lv="intermediate">棒</span>！
+          <span class="pw" data-lv="beginner">我</span>
+          <span class="pw" data-lv="intermediate">觉得</span>
+          <span class="pw" data-lv="beginner">很</span>
+          <span class="pw" data-lv="advanced">愉快</span>～
+          <span class="pw" data-lv="beginner">你们</span>
+          <span class="pw" data-lv="beginner">呢</span>？
+        </div>
+        <div class="post-tr">"The weather today is so great! I feel very pleasant — how about you all?"</div>
+        <div class="post-comments">
+          <div class="cmt">
+            <div class="cav" style="background:var(--teal-light);color:var(--teal);">M</div>
+            <div class="ctxt"><strong>Mei:</strong> <span class="pw" data-lv="beginner">今天</span> <span class="pw" data-lv="beginner">我</span> <span class="pw" data-lv="beginner">很</span> <span class="pw" data-lv="beginner">好</span>！谢谢 😊<span style="font-size:0.73rem;color:var(--ink-muted);display:block;margin-top:2px;font-style:italic;">"Today I am very good! Thank you" — Mei is practicing!</span></div>
+          </div>
+        </div>
+        <div class="post-ft">
+          <span class="pa">♡ 24</span><span class="pa">💬 Reply</span>
+          <span class="pa" style="margin-left:auto;color:var(--teal);">+ Save words</span>
+        </div>
+      </div>
+      <div class="post">
+        <div class="post-hd">
+          <div class="pav" style="background:#dce9fc;color:#3a6db5;">王</div>
+          <div><div class="pu">王明宇 · Wang Mingyu</div><div class="ps">Beijing · Watching Nirvana in Fire · 4h ago</div></div>
+          <div class="nat">Native Speaker</div>
+        </div>
+        <div class="post-body">
+          <span class="pw" data-lv="intermediate">刚刚</span>
+          <span class="pw" data-lv="beginner">看</span>
+          <span class="pw" data-lv="beginner">完</span>
+          <span class="pw" data-lv="intermediate">第六集</span>，
+          <span class="pw" data-lv="beginner">这个</span>
+          <span class="pw" data-lv="advanced">情节</span>
+          <span class="pw" data-lv="beginner">太</span>
+          <span class="pw" data-lv="intermediate">感动</span>
+          <span class="pw" data-lv="beginner">了</span>！
+        </div>
+        <div class="post-tr">"Just finished episode six — the plot is so touching!"</div>
+        <div class="post-ft">
+          <span class="pa">♡ 41</span><span class="pa">💬 Reply</span>
+          <span class="pa" style="margin-left:auto;color:var(--teal);">+ Save words</span>
+        </div>
+      </div>
+    </div>
+    <div class="match-panel">
+      <div class="mp-hd"><h4>Your matches</h4><span>2 online</span></div>
+      <div class="mi feat">
+        <div class="mav" style="background:var(--teal-light);color:var(--teal);">林</div>
+        <div><div class="mn"><span class="online"></span>Lin Xiaoyu</div><div class="md">Native · Shanghai</div><div class="shows"><span class="stag">A Love So Beautiful</span><span class="stag">Story of Yanxi</span></div></div>
+        <a href="#" class="mc">Chat →</a>
+      </div>
+      <div class="mi">
+        <div class="mav" style="background:#fce4d6;color:#c47d5e;">周</div>
+        <div><div class="mn"><span class="online"></span>Zhou Wei</div><div class="md">Native · Chengdu</div><div class="shows"><span class="stag">A Love So Beautiful</span></div></div>
+        <a href="#" class="mc">Chat →</a>
+      </div>
+      <div class="mi">
+        <div class="mav" style="background:var(--purple-light);color:var(--purple);">陈</div>
+        <div><div class="mn">Chen Rui</div><div class="md">Native · Guangzhou</div><div class="shows"><span class="stag">Love O2O</span><span class="stag">A Love So Beautiful</span></div></div>
+        <a href="#" class="mc">Connect →</a>
+      </div>
+      <div class="cowatch">
+        <div class="cowatch-t">💡 Co-watch tonight?</div>
+        <div class="cowatch-d">Lin Xiaoyu is watching episode 7 in 2 hours. Join her and practice live!</div>
+        <a href="#" class="cowatch-a">Join session →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="final-cta">
+  <h2>Start Mei's journey.<br><em>Make it yours.</em></h2>
+  <p>Free to start. No credit card. Your Netflix queue is already a classroom — you just need LingoFlix.</p>
+  <a href="lingoflix.html#waitlist" class="btn-final">Join the waitlist →</a>
+</div>
+
+<footer>
+  <div class="fl">Lingo<span>Flix</span></div>
+  <p>© 2025 LingoFlix · Watch. Learn. Connect.</p>
+  <a href="lingoflix.html" style="color:rgba(247,243,236,0.32);text-decoration:none;">← Back to home</a>
+</footer>
+
+<script>
+const order=['beginner','intermediate','advanced'];
+const descs={beginner:'Words Mei knows light up — unknown words fade into the background',intermediate:'More vocabulary glows — intermediate words now join the beginner highlights',advanced:'Almost everything is lit — Mei can follow nearly the full scene'};
+const aiTxt={beginner:'<strong>你好 (nǐ hǎo)</strong> — you know this well! It appeared in episode 2. LingoFlix has tracked 23 mastered beginner words so far.',intermediate:'<strong>倔强 (juéjiàng)</strong> — "stubborn / unyielding." Jiang Chen uses it again in episodes 9 and 12. Add it to tonight\'s flashcard session?',advanced:'<strong>Great fluency!</strong> At this level you follow the scene naturally. LingoFlix will now focus on grammar patterns, measure words, and idiomatic expressions.'};
+const knownSets={beginner:'我 · 你 · 她 · 真的 · 朋友 · 好',intermediate:'我 · 你 · 她 · 真的 · 朋友 · 好 · 知道 · 觉得 · 这么 · 感动',advanced:'我 · 你 · 她 · 真的 · 朋友 · 好 · 知道 · 觉得 · 这么 · 感动 · 喜欢 · 为什么 · 倔强 · 愉快'};
+const bc={beginner:['var(--teal-light)','var(--teal)'],intermediate:['var(--gold-light)','#8a6a10'],advanced:['var(--coral-light)','var(--coral)']};
+function applyLevel(lv){
+  document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.toggle('on',b.dataset.l===lv));
+  document.getElementById('tog-desc').textContent=descs[lv];
+  const idx=order.indexOf(lv);
+  document.querySelectorAll('.w,.pw').forEach(w=>{
+    const wi=order.indexOf(w.dataset.lv);
+    w.classList.remove('dim','hid');
+    if(wi>idx+1)w.classList.add('hid');
+    else if(wi===idx+1)w.classList.add('dim');
+  });
+  const ai=document.getElementById('ai-txt');if(ai)ai.innerHTML=aiTxt[lv];
+  const wk=document.getElementById('wk');if(wk)wk.textContent=knownSets[lv];
+  const fb=document.getElementById('fc-badge');
+  if(fb){fb.style.background=bc[lv][0];fb.style.color=bc[lv][1];fb.textContent=lv.charAt(0).toUpperCase()+lv.slice(1)+' · Due now';}
+  const mb=document.getElementById('mei-badge');
+  if(mb){mb.style.background=bc[lv][0];mb.style.color=bc[lv][1];mb.textContent=lv.charAt(0).toUpperCase()+lv.slice(1);}
+}
+document.querySelectorAll('.lvl-btn').forEach(b=>b.addEventListener('click',()=>applyLevel(b.dataset.l)));
+const cards=[{zh:'你好',py:'nǐ hǎo',en:'hello / hi',ctx:'Heard in ep.3 when Xiaoxi greets Jiang Chen. Seen 4× this week.'},{zh:'学习',py:'xuéxí',en:'to study / learn',ctx:'Appears 6× in ep.6. A core beginner word for your current arc.'},{zh:'明白',py:'míng bai',en:'to understand',ctx:'You just heard it in tonight\'s subtitle! Intermediate level.'},{zh:'朋友',py:'péngyǒu',en:'friend',ctx:'Your most-seen word this week — 12 exposures across 3 episodes.'}];
+let ci=0;
+function nextCard(action){
+  ci=(ci+1)%cards.length;const c=cards[ci];const el=document.getElementById('fc-front');
+  el.style.opacity='0.3';el.style.transform='rotate(6deg) scale(0.95)';
+  setTimeout(()=>{document.getElementById('fc-zh').textContent=c.zh;document.getElementById('fc-py').textContent=c.py;document.getElementById('fc-en').textContent=c.en;document.getElementById('fc-ctx').textContent=c.ctx;el.style.opacity='1';el.style.transform='rotate(0) scale(1.04)';},180);
+  const m={again:[6,12,4],good:[6,11,5],easy:[5,11,6]}[action]||[6,12,4];
+  document.getElementById('pf-new').style.width=(m[0]/10*100)+'%';document.getElementById('pf-rev').style.width=(m[1]/15*100)+'%';document.getElementById('pf-mas').style.width=(m[2]/10*100)+'%';
+  document.getElementById('pn-new').textContent=m[0];document.getElementById('pn-rev').textContent=m[1];document.getElementById('pn-mas').textContent=m[2];
+}
+const vocab=[{zh:'你好',py:'nǐ hǎo',en:'hello',lv:'beginner'},{zh:'真的',py:'zhēn de',en:'really',lv:'beginner'},{zh:'明白',py:'míng bai',en:'understand',lv:'intermediate'},{zh:'为什么',py:'wèishéme',en:'why',lv:'intermediate'},{zh:'倔强',py:'juéjiàng',en:'stubborn',lv:'advanced'},{zh:'愉快',py:'yúkuài',en:'pleasant',lv:'advanced'}];
+const vc={beginner:['var(--teal-light)','var(--teal)'],intermediate:['var(--gold-light)','#8a6a10'],advanced:['var(--coral-light)','var(--coral)']};
+const vl=document.getElementById('vocab-list');
+vocab.forEach((v,i)=>{const[bg,col]=vc[v.lv];vl.innerHTML+=`<div style="display:flex;align-items:center;gap:0.7rem;padding:0.45rem 0;${i<vocab.length-1?'border-bottom:1px solid var(--border);':''}"><span style="font-family:'Noto Sans SC',sans-serif;font-size:1.2rem;font-weight:700;width:42px;">${v.zh}</span><span style="font-size:0.76rem;color:var(--ink-muted);flex:1;">${v.py} · ${v.en}</span><span style="font-size:0.67rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:100px;background:${bg};color:${col};">${v.lv}</span></div>`;});
+const obs=new IntersectionObserver(e=>e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('vis');}),{threshold:0.1});
+document.querySelectorAll('.chapter,.div-line').forEach(el=>obs.observe(el));
+applyLevel('beginner');
+</script>
+</body>
+</html>
